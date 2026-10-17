@@ -34,9 +34,9 @@ import astropy
 import astropy.units as u
 
 
-import fit
-from asymptotic_theory import gravity_modes
-from observations import pulsations as obspuls
+from amigo import fit
+from amigo.asymptotic_theory import gravity_modes
+from amigo.observations import pulsations as obspuls
 
 
 ### default numerical settings, overridden by the &numerical section of the
