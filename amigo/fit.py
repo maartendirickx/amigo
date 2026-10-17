@@ -284,7 +284,7 @@ def fit_with_grid(obsstar, modes, diagnostic='spacings', Pi0min=2300.,
     try:
         e_frot = np.amax(np.abs(sel_frot - frot.value)) / 3. / u.d
         e_Pi0 = np.amax(np.abs(sel_Pi0 - Pi0.value)) / 3. * u.s
-    except:
+    except Exception:
         e_frot = -1. / u.d
         e_Pi0  = -1. * u.s
     

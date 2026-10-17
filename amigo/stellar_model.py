@@ -942,7 +942,7 @@ class stellar_model(object):
             diff = np.abs(solution.y[1][-1]-(lval+1.)*(solution.y[0][-1]/maxr))
             resid = diff / np.abs(solution.y[1][-1])
             
-        except:
+        except Exception:
             solution = None
             resid = 10.**8.
             pass
