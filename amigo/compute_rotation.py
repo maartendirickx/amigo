@@ -39,10 +39,18 @@ from asymptotic_theory import gravity_modes
 from observations import pulsations as obspuls
 
 
+### default numerical settings, overridden by the &numerical section of the
+### user-defined inlist
+NUMERICAL_DEFAULTS = {'optimisation_method': 'grid', 'diagnostic': 'spacings',
+                      'use_sequence': True, 'sigma_sampling': 10,
+                      'grid_scaling': 5, 'cvg_rate': 1.5}
+
+
 def read_inlist(inlist_filename):
     """
         Read in the parameter values of the user-defined inlist, as well as the
-        configuration file and the default numerical settings.
+        configuration file. Numerical settings that are missing from the inlist
+        are taken from NUMERICAL_DEFAULTS.
         
         Parameters:
             inlist_filename: string
@@ -127,9 +135,8 @@ def read_inlist(inlist_filename):
     
     ### default inlist files that are always read in
     config_file = f'{os.path.dirname(__file__)}/../defaults/config.dat'
-    def_num = f'{os.path.dirname(__file__)}/../defaults/default_numerical.dat'
     
-    ### the main read routine (is called three times within this function)
+    ### the main read routine
     def read_routine(filename, params):
         """
             Base routine used to read in the inlist, called multiple times 
@@ -220,11 +227,9 @@ def read_inlist(inlist_filename):
             nthreads = int(line.split('=')[1].split('#')[0].strip())
         
     ### A dictionary of all the possible sections in the inlist, except 'modes'
-    inlist_params = {'observations':{},'numerical':{},'star':{}, 'rotation':{},\
-                                                                    'output':{}}
-    
-    ### Reading in the default AMiGO numerical settings
-    inlist_params = read_routine(def_num, inlist_params)
+    ### (the numerical settings start from the AMiGO defaults)
+    inlist_params = {'observations':{}, 'numerical':dict(NUMERICAL_DEFAULTS),
+                                     'star':{}, 'rotation':{}, 'output':{}}
     
     ### Reading in the custom AMiGO inlist
     inlist_params = read_routine(inlist_filename, inlist_params)
