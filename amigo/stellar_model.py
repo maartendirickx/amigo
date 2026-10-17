@@ -11,7 +11,7 @@ import numpy as np
 import astropy.units as u
 import sys
 
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumulative_trapezoid
 from scipy.integrate import solve_ivp
 from multiprocessing import Pool
 from itertools import product
@@ -1000,7 +1000,7 @@ class stellar_model(object):
         
         # Computing the differential rotation
         integrand = brunt_norm**2./self.radius
-        cum_integral = cumtrapz( integrand, x = self.radius, initial = 0. )
+        cum_integral = cumulative_trapezoid( integrand, x = self.radius, initial = 0. )
         diffrot_prof = 1. - ( cum_integral / np.amax(cum_integral) )
         
         # Rescaling the differential rotation to match the frot_vals, if given
