@@ -10,7 +10,6 @@
 
 
 
-import os
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -22,41 +21,6 @@ from amigo.stellar_model import stellar_model
 mpl.rc('font', size=14)
 
 
-def read_config_file():
-    """
-        Read in the configuration file of AMiGO.
-        
-        Parameters:
-            NA
-        
-        Returns:
-            gyre_dir:        string
-                             path to the GYRE installation directory
-            nthreads:        integer
-                             number of threads to be used in the parallellised 
-                             parts of the code
-    """
-    
-    config_file = f'{os.path.dirname(__file__)}/../../defaults/config.dat'
-    
-    ### Reading in the main config file
-    file = open(config_file,'r')
-    lines = file.readlines()
-    file.close()
-    
-    gyre_dir = ''
-    nthreads = 1
-    
-    for line in lines:
-        if(line.split('=')[0].strip() == 'gyre_dir'):
-            gyre_dir = line.split('=')[1].split('#')[0].strip()
-        elif(line.split('=')[0].strip() == 'nthreads'):
-            nthreads = int(line.split('=')[1].split('#')[0].strip())
-    
-    return gyre_dir, nthreads
-    
-
-
 
 
 if __name__ == "__main__":
@@ -65,8 +29,6 @@ if __name__ == "__main__":
     ###
     ### Some required ( & optional) variables
     ###
-    
-    gyre_dir, nthreads = read_config_file()
     
     
     # Geometric mode identification (n,k,m) for the g-modes, where n is the 
@@ -94,7 +56,7 @@ if __name__ == "__main__":
     
     
     # Initialising the gravity_modes class object
-    gmode_k0m1 = gm(gyre_dir, kval=k, mval=m, nmin=nmin, nmax=nmax)
+    gmode_k0m1 = gm(kval=k, mval=m, nmin=nmin, nmax=nmax)
     
     # Calculating the patterns for each of the assumed uniform rotation rates
     k0m1_series = []

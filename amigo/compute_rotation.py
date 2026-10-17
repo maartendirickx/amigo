@@ -49,8 +49,9 @@ NUMERICAL_DEFAULTS = {'optimisation_method': 'grid', 'diagnostic': 'spacings',
 def read_inlist(inlist_filename):
     """
         Read in the parameter values of the user-defined inlist, as well as the
-        configuration file. Numerical settings that are missing from the inlist
-        are taken from NUMERICAL_DEFAULTS.
+        configuration from the environment variables GYRE_DIR and 
+        AMIGO_NTHREADS (or OMP_NUM_THREADS). Numerical settings that are 
+        missing from the inlist are taken from NUMERICAL_DEFAULTS.
         
         Parameters:
             inlist_filename: string
@@ -58,7 +59,9 @@ def read_inlist(inlist_filename):
         
         Returns:
             gyre_dir:        string
-                             path to the GYRE installation directory
+                             path to the GYRE installation directory, taken
+                             from the GYRE_DIR environment variable (None if
+                             it is not set)
             starname:        string
                              name of the analysed star
             obsfile:         string
@@ -78,7 +81,9 @@ def read_inlist(inlist_filename):
                                           python package lmfit.
             nthreads:        integer
                              number of threads to be used in the parallellised 
-                             parts of the code
+                             parts of the code, taken from the AMIGO_NTHREADS 
+                             or else the OMP_NUM_THREADS environment variable
+                             (default = 1)
             frot_bnd:        numpy array (dtype = float)
                              minimum, maximum and step of the evaluated rotation
                              rates (in cycle per day)
@@ -132,9 +137,6 @@ def read_inlist(inlist_filename):
                              path to the directory where the results have to be
                              saved
     """
-    
-    ### default inlist files that are always read in
-    config_file = f'{os.path.dirname(__file__)}/../defaults/config.dat'
     
     ### the main read routine
     def read_routine(filename, params):
@@ -212,19 +214,13 @@ def read_inlist(inlist_filename):
             raise ValueError(f'{err1} {err2}')
     
     
-    ### Reading in the main config file
-    file = open(config_file,'r')
-    lines = file.readlines()
-    file.close()
+    ### Reading in the configuration from the environment variables
+    gyre_dir = os.environ.get('GYRE_DIR')
     
-    gyre_dir = ''
-    nthreads = 1
-    
-    for line in lines:
-        if(line.split('=')[0].strip() == 'gyre_dir'):
-            gyre_dir = line.split('=')[1].split('#')[0].strip()
-        elif(line.split('=')[0].strip() == 'nthreads'):
-            nthreads = int(line.split('=')[1].split('#')[0].strip())
+    # OMP_NUM_THREADS may list one value per nesting level: use the first one
+    nthreads = os.environ.get('AMIGO_NTHREADS') or \
+                                       os.environ.get('OMP_NUM_THREADS') or '1'
+    nthreads = int(nthreads.split(',')[0])
         
     ### A dictionary of all the possible sections in the inlist, except 'modes'
     ### (the numerical settings start from the AMiGO defaults)

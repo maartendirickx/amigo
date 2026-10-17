@@ -20,41 +20,6 @@ from amigo.stellar_model import stellar_model
 mpl.rc('font', size=14)
 
 
-def read_config_file():
-    """
-        Read in the configuration file of AMiGO.
-        
-        Parameters:
-            NA
-        
-        Returns:
-            gyre_dir:        string
-                             path to the GYRE installation directory
-            nthreads:        integer
-                             number of threads to be used in the parallellised 
-                             parts of the code
-    """
-    
-    config_file = f'{os.path.dirname(__file__)}/../../defaults/config.dat'
-    
-    ### Reading in the main config file
-    file = open(config_file,'r')
-    lines = file.readlines()
-    file.close()
-    
-    gyre_dir = ''
-    nthreads = 1
-    
-    for line in lines:
-        if(line.split('=')[0].strip() == 'gyre_dir'):
-            gyre_dir = line.split('=')[1].split('#')[0].strip()
-        elif(line.split('=')[0].strip() == 'nthreads'):
-            nthreads = int(line.split('=')[1].split('#')[0].strip())
-    
-    return gyre_dir, nthreads
-    
-
-
 def read_mesaprofile(mesaprofile):
     """
         A basic routine to read in a precalculated MESA profile (in GYRE  
@@ -108,8 +73,6 @@ if __name__ == "__main__":
     ### Some required ( & optional) variables
     ###
     
-    gyre_dir, nthreads = read_config_file()
-    
     ode_method = 'BDF' # the numerical method that we use to solve the ODE
     nthreads = 8       # the number of threads used in the parallellisation
     
@@ -147,8 +110,8 @@ if __name__ == "__main__":
     Pi0 = star.Pi0()
     
     # Initialising the gravity_modes class objects
-    gmode_k0m1 = gm(gyre_dir, kval=k1, mval=m1, nmin=nmin, nmax=nmax)
-    rmode_k2m1 = gm(gyre_dir, kval=k2, mval=m2, nmin=nmin, nmax=nmax)
+    gmode_k0m1 = gm(kval=k1, mval=m1, nmin=nmin, nmax=nmax)
+    rmode_k2m1 = gm(kval=k2, mval=m2, nmin=nmin, nmax=nmax)
     
     # calculating the centrifugal deformation
     omrot = omrot_frac * star.omegacrit_roche[-1]
