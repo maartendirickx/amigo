@@ -188,13 +188,14 @@ def read_inlist(inlist_filename):
                     params[section][param_name] = str_vals.strip("'")
                 elif('"' in str_vals):
                     params[section][param_name] = str_vals.strip('"')
-                elif('True' in str_vals):
+                elif(str_vals == 'True'):
                     params[section][param_name] = True
-                elif('False' in str_vals):
+                elif(str_vals == 'False'):
                     params[section][param_name] = False
                 else:
-                    # numerical type parameters
-                    if('.' in str_vals):
+                    # numerical type parameters (floats have a decimal point
+                    # or an exponent, e.g. 0.005 or 5e-3)
+                    if(('.' in str_vals) | ('e' in str_vals.lower())):
                         dtype = float
                     else:
                         dtype = int
