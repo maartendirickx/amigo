@@ -103,7 +103,8 @@ class gravity_modes(object):
         
         infile = f'{gyre_dir}/data/tar/tar_fit.m{mstr}.k{kstr}.h5'
         
-        sys.path.append(gyre_dir+'/src/tar/')
+        if(gyre_dir+'/src/tar/' not in sys.path):
+            sys.path.append(gyre_dir+'/src/tar/')
         
         # Find gyre file name (beware - this file name has changed in gyre
         # version 7.2, which results in a bug until GYRE version 8.0,
