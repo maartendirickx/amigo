@@ -12,6 +12,7 @@
 
 import numpy as np
 import astropy.units as u
+import os
 import sys
 
 from itertools import product
@@ -31,14 +32,16 @@ class gravity_modes(object):
           acceleration (Henneco et al. 2021, A&A 648, A97).
     """
     
-    def __init__(self,gyre_dir,kval=0,mval=1,nmin=1,nmax=150):
+    def __init__(self,gyre_dir=None,kval=0,mval=1,nmin=1,nmax=150):
         """
             Setting up the environment/asymptotic object to calculate g-mode 
             period-spacing patterns.
             
             Parameters:
-                gyre_dir: string
+                gyre_dir: string; optional
                           The GYRE 9.x (or higher) installation directory.
+                          Default value = None: the value of the GYRE_DIR
+                          environment variable is used.
                 kval:     integer
                           Part of the mode identification of the pulsation 
                           pattern. For gravito-inertial modes with an equivalent
@@ -60,6 +63,13 @@ class gravity_modes(object):
         self.mval = int(mval)
         self.lval = abs(kval) + abs(mval)
         self.nvals = np.arange(nmin,nmax+0.1,1.)
+        
+        if(gyre_dir is None):
+            gyre_dir = os.environ.get('GYRE_DIR')
+            if(not gyre_dir):
+                raise ValueError("No GYRE installation directory given: " +
+                                 "set the GYRE_DIR environment variable " +
+                                 "or pass gyre_dir.")
         
         self.lam_fun  = self._retrieve_laplacegrid(gyre_dir)
         self.spin, self.lam, self.spinsqlam, self.fun1, self.fun2 \
