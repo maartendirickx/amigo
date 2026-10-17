@@ -14,7 +14,8 @@ import sys
 from scipy.integrate import cumulative_trapezoid
 from scipy.integrate import solve_ivp
 from multiprocessing import Pool
-from itertools import product
+from itertools import product, starmap
+from contextlib import nullcontext
 
 
 class stellar_model(object):
@@ -659,13 +660,16 @@ class stellar_model(object):
             dphidrmax = dphidrmax2
         
         Niter = 1
-        with Pool(processes=nthreads) as ppool:
+        # (without worker processes for a single thread)
+        with (Pool(processes=nthreads) if(nthreads != 1) else nullcontext()) \
+                                                                      as ppool:
+            pstarmap = starmap if(ppool is None) else ppool.starmap
 
             while((np.r_[np.array(resid) > rel_tol].all()) & (Niter <= maxiter)):
                 Niter += 1
                 dphidr_guess = np.linspace(dphidrmin,dphidrmax,nsample)
                 param_product = product(dphidr_guess,[lval],[omrot],[ode_method])
-                resid_guess = ppool.starmap(self._solve_ode, param_product)
+                resid_guess = list(pstarmap(self._solve_ode, param_product))
                 dphidrs = dphidrs + list(dphidr_guess)
                 resid = resid + list(resid_guess)
 

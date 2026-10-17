@@ -8,6 +8,7 @@
 import numpy as np
 from multiprocessing import Pool
 from functools import partial
+from itertools import starmap
 
 from scipy.stats import chi2 as chi2dist
 from collections import namedtuple
@@ -252,11 +253,14 @@ def fit_with_grid(obsstar, modes, diagnostic='spacings', Pi0min=2300.,
     sample = grid.sampling(parameters,minbound,maxbound,method=method,
                                                       regular_step=regular_step)
         
-    # Parallellised calculations
-    with Pool(nthreads) as ppool:
-        chi2 = ppool.starmap(partial(rss, obsstar, modes, diagnostic,
-                                   alpha_g=alpha_in, use_sequence=use_sequence),
-                                            zip(sample['f_rot'], sample['Pi0']))
+    # Parallellised calculations (without worker processes for a single thread)
+    rss_obs = partial(rss, obsstar, modes, diagnostic, alpha_g=alpha_in, 
+                                                      use_sequence=use_sequence)
+    if(nthreads == 1):
+        chi2 = list(starmap(rss_obs, zip(sample['f_rot'], sample['Pi0'])))
+    else:
+        with Pool(nthreads) as ppool:
+            chi2 = ppool.starmap(rss_obs, zip(sample['f_rot'], sample['Pi0']))
     chi2 = np.array(chi2) / deg_freedom
     invalid = np.r_[chi2 > 10.**59.]
     valid = ~invalid
