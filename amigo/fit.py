@@ -253,8 +253,8 @@ def fit_with_grid(obsstar, modes, diagnostic='spacings', Pi0min=2300.,
                                                       regular_step=regular_step)
         
     # Parallellised calculations
-    ppool = Pool(nthreads)
-    chi2 = ppool.starmap(partial(rss, obsstar, modes, diagnostic,
+    with Pool(nthreads) as ppool:
+        chi2 = ppool.starmap(partial(rss, obsstar, modes, diagnostic,
                                    alpha_g=alpha_in, use_sequence=use_sequence),
                                             zip(sample['f_rot'], sample['Pi0']))
     chi2 = np.array(chi2) / deg_freedom

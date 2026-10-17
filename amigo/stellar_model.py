@@ -659,25 +659,25 @@ class stellar_model(object):
             dphidrmax = dphidrmax2
         
         Niter = 1
-        ppool = Pool(processes=nthreads)
-        
-        while((np.r_[np.array(resid) > rel_tol].all()) & (Niter <= maxiter)): 
-            Niter += 1
-            dphidr_guess = np.linspace(dphidrmin,dphidrmax,nsample)
-            param_product = product(dphidr_guess,[lval],[omrot],[ode_method])
-            resid_guess = ppool.starmap(self._solve_ode, param_product)
-            dphidrs = dphidrs + list(dphidr_guess)
-            resid = resid + list(resid_guess)
+        with Pool(processes=nthreads) as ppool:
 
-            if((np.argmin(resid_guess) == len(resid_guess)-1) | \
+            while((np.r_[np.array(resid) > rel_tol].all()) & (Niter <= maxiter)):
+                Niter += 1
+                dphidr_guess = np.linspace(dphidrmin,dphidrmax,nsample)
+                param_product = product(dphidr_guess,[lval],[omrot],[ode_method])
+                resid_guess = ppool.starmap(self._solve_ode, param_product)
+                dphidrs = dphidrs + list(dphidr_guess)
+                resid = resid + list(resid_guess)
+
+                if((np.argmin(resid_guess) == len(resid_guess)-1) | \
                                                  (np.argmin(resid_guess) == 0)):
-                dphidr_ran = dphidrmax-dphidrmin
-                
-            else:
-                dphidr_ran = 0.5*(dphidrmax-dphidrmin)
-        
-            dphidrmin = dphidr_guess[np.argmin(resid_guess)] - 0.5*dphidr_ran
-            dphidrmax = dphidr_guess[np.argmin(resid_guess)] + 0.5*dphidr_ran
+                    dphidr_ran = dphidrmax-dphidrmin
+
+                else:
+                    dphidr_ran = 0.5*(dphidrmax-dphidrmin)
+
+                dphidrmin = dphidr_guess[np.argmin(resid_guess)] - 0.5*dphidr_ran
+                dphidrmax = dphidr_guess[np.argmin(resid_guess)] + 0.5*dphidr_ran
         
         dphidrs = np.array(dphidrs)
         resid = np.array(resid)
