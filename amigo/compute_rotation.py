@@ -524,7 +524,31 @@ def plot_results(obsstar, modes, fin_frot, fin_Pi0, nvals, alpha, method='grid',
 
 
 
-if __name__ == "__main__":
+def main():
+    """
+        The AMiGO command-line interface:
+            amigo <inlist>         fit the observed period-spacing pattern(s) 
+                                   with the settings in the inlist
+            amigo init <inlist>    create a new inlist from the blueprint
+    """
+    
+    usage = 'usage: amigo <inlist>\n       amigo init <new inlist>'
+    
+    if((len(sys.argv) == 2) and (sys.argv[1] in ['-h', '--help'])):
+        print(usage)
+        return
+    
+    elif((len(sys.argv) == 3) and (sys.argv[1] == 'init')):
+        try:
+            init_inlist(sys.argv[2])
+        except FileExistsError:
+            sys.exit(f'amigo init: {sys.argv[2]} already exists.')
+        print(f'Created {sys.argv[2]}: set the star name and the pattern ' +
+               'file, and adapt the other values to the analysed star.')
+        return
+    
+    elif(len(sys.argv) != 2):
+        sys.exit(usage)
     
     # avoiding unnecessary warnings
     warnings.simplefilter('ignore')
@@ -659,4 +683,10 @@ if __name__ == "__main__":
         
     if(interactive | (not os.path.exists(output_dir))):
         plt.show()
-        
+    
+    return
+
+
+
+if __name__ == "__main__":
+    main()

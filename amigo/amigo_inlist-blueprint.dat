@@ -1,4 +1,4 @@
-# AMiGO inlist, created with amigo.compute_rotation.init_inlist().
+# AMiGO inlist, created with `amigo init` (amigo.compute_rotation.init_inlist).
 # The numerical settings are the AMiGO defaults. All other values are examples:
 # adapt them to the analysed star.
 

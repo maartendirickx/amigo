@@ -14,6 +14,8 @@ matplotlib = "^3.8.0"
 numpy = "^1.26.0"
 h5py = "^3.9.0"
 
+[tool.poetry.scripts]
+amigo = "amigo.compute_rotation:main"
 
 [build-system]
 requires = ["poetry-core"]
