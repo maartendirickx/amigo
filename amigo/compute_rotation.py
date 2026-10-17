@@ -45,13 +45,18 @@ NUMERICAL_DEFAULTS = {'optimisation_method': 'grid', 'diagnostic': 'spacings',
                       'use_sequence': True, 'sigma_sampling': 10,
                       'grid_scaling': 5, 'cvg_rate': 1.5}
 
+### default output settings, overridden by the &output section of the
+### user-defined inlist
+OUTPUT_DEFAULTS = {'interactive': False, 'output_dir': '.'}
+
 
 def read_inlist(inlist_filename):
     """
         Read in the parameter values of the user-defined inlist, as well as the
         configuration from the environment variables GYRE_DIR and 
-        AMIGO_NTHREADS (or OMP_NUM_THREADS). Numerical settings that are 
-        missing from the inlist are taken from NUMERICAL_DEFAULTS.
+        AMIGO_NTHREADS (or OMP_NUM_THREADS). Numerical and output settings 
+        that are missing from the inlist are taken from NUMERICAL_DEFAULTS and
+        OUTPUT_DEFAULTS, respectively.
         
         Parameters:
             inlist_filename: string
@@ -223,9 +228,9 @@ def read_inlist(inlist_filename):
     nthreads = int(nthreads.split(',')[0])
         
     ### A dictionary of all the possible sections in the inlist, except 'modes'
-    ### (the numerical settings start from the AMiGO defaults)
+    ### (the numerical and output settings start from the AMiGO defaults)
     inlist_params = {'observations':{}, 'numerical':dict(NUMERICAL_DEFAULTS),
-                                     'star':{}, 'rotation':{}, 'output':{}}
+                     'star':{}, 'rotation':{}, 'output':dict(OUTPUT_DEFAULTS)}
     
     ### Reading in the custom AMiGO inlist
     inlist_params = read_routine(inlist_filename, inlist_params)
