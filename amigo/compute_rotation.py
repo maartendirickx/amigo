@@ -580,11 +580,12 @@ def main():
     # reading in the observations
     obsstar = obspuls(star,obsfile)
     
-    # preparing the output directory and lo file if the path in the inlist 
-    # exists
+    # preparing the output directory and log file (with an empty output_dir
+    # the results are only shown, not saved)
+    if(output_dir != ''):
+        os.makedirs(f'{output_dir}/{obsstar.starname}', exist_ok=True)
+
     if(os.path.exists(output_dir)):
-        if not os.path.exists(f'{output_dir}/{obsstar.starname}'):
-            os.makedirs(f'{output_dir}/{obsstar.starname}')
         output_log = open(f'{output_dir}/{obsstar.starname}/' + \
                           f'{obsstar.starname}_modelling.log','w')
     else:
