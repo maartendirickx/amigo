@@ -555,8 +555,9 @@ def main():
     elif(len(sys.argv) != 2):
         sys.exit(usage)
     
-    # avoiding unnecessary warnings
-    warnings.simplefilter('ignore')
+    # avoiding unnecessary numerical warnings (e.g., about invalid values in 
+    # numpy operations), while still showing all other warnings
+    warnings.simplefilter('ignore', RuntimeWarning)
     
     # read in the chosen parameters and relevant filenames in the inlist
     inlist_filename = sys.argv[1]
