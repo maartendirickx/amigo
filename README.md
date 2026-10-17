@@ -36,49 +36,47 @@ Installation instructions
 
 To install AMIGO, you need to:
 1. install the required python environment. AMIGO requires python >=3.9 and 
-   <=3.12, and uses Poetry (https://python-poetry.org/docs/) to manage package 
-   dependencies. You can combine this with the virtual Python environment manager of your
-   choice, e.g., Conda (https://conda.io/projects/conda/en/latest/index.html).
-
-2. ensure you have access to the source code of a recent version of GYRE 
-   (v9.x or later; https://gyre.readthedocs.io/en/stable/). It does not have to
-   be installed, but AMIGO relies on some of the data files that are included 
-   with the GYRE source code. Beware: GYRE versions 7.2 to 8.0 are not compatible with Amigo.
-   
-3. When the prerequisites are met, the git repository can be cloned into a directory <dir> of your choice by typing these commands into a terminal:
-```
-           $ cd <dir>
-           $ git clone https://github.com/TVanReeth/amigo.git amigo
-```
-        
-4. Add the directory <dir> as a Python path to your `~/.bashrc` file:
-```
-           $ export PYTHONPATH="${PYTHONPATH}:<dir>"
-```
-        
-5. Activate the python virtual environment in which you want to install the required
-   python packages. To avoid possible conflicting dependencies, we advice to build and
-   activate a custom environment. E.g., with conda this can be done by typing:
+   <=3.12. To avoid possible conflicting dependencies, we advice to build and
+   activate a custom environment, e.g., with venv, Conda 
+   (https://conda.io/projects/conda/en/latest/index.html) or micromamba. With 
+   conda this can be done by typing:
 ```
            $ conda create -n amigo_py python=3.9
            $ conda activate amigo_py
 ```
-   
-6. Use Poetry to install the required Python packages with all their dependencies.
+
+2. ensure you have access to the source code of a recent version of GYRE 
+   (v9.x or later; https://gyre.readthedocs.io/en/stable/). It does not have to
+   be installed or compiled: AMIGO only relies on the python files in `src/tar/`
+   and the data files in `data/tar/` that are included with the GYRE source 
+   code. Beware: GYRE versions 7.2 to 8.0 are not compatible with Amigo.
+   Point the `GYRE_DIR` environment variable to the GYRE directory, e.g. in your
+   `~/.bashrc` file (this is the same variable that GYRE itself uses):
 ```
+           $ export GYRE_DIR=<gyre_dir>
+```
+
+3. clone the git repository into a directory of your choice and install AMIGO
+   with pip, which also installs the required python packages:
+```
+           $ git clone https://github.com/TVanReeth/amigo.git amigo
            $ cd amigo
-           $ poetry install
+           $ pip install .
 ```
-   
-7. Modify the parameters in the configuration file `<dir>/amigo/defaults/config.dat` as needed.
+   For development, use `pip install -e .` or `poetry install` 
+   (https://python-poetry.org/docs/) instead.
 
-8. Optional: include the following alias in your `~/.bashrc` file:
+4. Optional: set the maximum number of CPU threads used in the calculations with
+   the `AMIGO_NTHREADS` environment variable. If it is not set, the value of 
+   `OMP_NUM_THREADS` is used, and otherwise a single thread.
 ```
-        alias amigo=’python <dir>/amigo/amigo/compute_rotation.py’
+           $ export AMIGO_NTHREADS=4
 ```
 
-Throughout the rest of this documentation, it is assumed that this alias command has
-been defined.
+This installs the `amigo` command. `amigo <inlist>` models the observed period-spacing
+pattern(s) with the settings in the inlist, and `amigo init <inlist>` creates a new
+inlist with the default numerical settings and example values, to be adapted to the
+analysed star.
 
 
 Using AMIGO
