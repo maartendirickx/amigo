@@ -262,6 +262,31 @@ def read_inlist(inlist_filename):
 
 
 
+def init_inlist(inlist_filename):
+    """
+        Create a new AMiGO inlist from the blueprint that is included with
+        AMiGO. The numerical settings are set to NUMERICAL_DEFAULTS; all other
+        values are examples that have to be adapted to the analysed star.
+
+        Parameters:
+            inlist_filename: string
+                             path to the inlist that will be created. An
+                             existing file is not overwritten.
+    """
+
+    blueprint = f'{os.path.dirname(__file__)}/amigo_inlist-blueprint.dat'
+
+    with open(blueprint, 'r') as file:
+        template = file.read()
+
+    with open(inlist_filename, 'x') as file:
+        file.write(template.format(**NUMERICAL_DEFAULTS))
+
+    return
+
+
+
+
 def plot_results(obsstar, modes, fin_frot, fin_Pi0, nvals, alpha, method='grid', 
                  sample=None, chi2=None, deg_freedom=None,diagnostic='spacings',
                                                                  output_dir=''):
