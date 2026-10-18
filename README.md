@@ -78,6 +78,9 @@ pattern(s) with the settings in the inlist, and `amigo init <inlist>` creates a 
 inlist with the default numerical settings and example values, to be adapted to the
 analysed star.
 
+When upgrading from an earlier version, see `CHANGELOG.md` for the changes and for how
+to adapt your setup and scripts.
+
 
 Using AMIGO
 -----------
